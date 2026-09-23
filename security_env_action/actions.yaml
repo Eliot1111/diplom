@@ -1,0 +1,16 @@
+name: My first action
+description: "Just testing how it works"
+
+inputs:
+  get-name:
+    description: "To get the name of my user"
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Print message to user
+      shell: bash
+      run:
+        echo "Hello from developer to ${{ inputs.get-name }}"
