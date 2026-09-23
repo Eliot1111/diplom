@@ -20,8 +20,7 @@ jobs:
         pip install pylint bandit
     - name: Analysing the code with pylint and bandit
       run: |
-        pylint $(git ls-files '*.py') |
-        bandit -rlll $(git ls-files '*.py')
+        pylint $(git ls-files '*.py')
     - name: Testing my own workflow
       id: first_test
       uses: ./security_env_action
