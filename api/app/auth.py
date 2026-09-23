@@ -1,3 +1,5 @@
+"""Password hashing and JWT creation."""
+
 import os
 from datetime import datetime, timedelta, timezone
 
@@ -16,14 +18,17 @@ password_hash = PasswordHash.recommended()
 
 
 def hash_password(password: str) -> str:
+    """Hash a plaintext password for storage."""
     return password_hash.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Check a plaintext password against its stored hash."""
     return password_hash.verify(plain_password, hashed_password)
 
 
 def create_access_token(username: str) -> str:
+    """Create a signed, expiring access token for a username."""
     expires_at = datetime.now(timezone.utc) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )

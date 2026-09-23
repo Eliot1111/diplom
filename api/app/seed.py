@@ -1,3 +1,5 @@
+"""Populate the database with demonstration accounts and items."""
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -19,6 +21,7 @@ ITEMS = (
 
 
 def seed_database() -> None:
+    """Create missing demo users and items without duplicating them."""
     Base.metadata.create_all(bind=engine)
 
     with Session(engine) as db:

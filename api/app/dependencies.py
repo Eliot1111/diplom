@@ -1,3 +1,5 @@
+"""Database and authorization dependencies for API routes."""
+
 from collections.abc import Generator
 
 import jwt
@@ -8,7 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.auth import ALGORITHM, SECRET_KEY
-from app.database import SessionLocal
+from app.database import SESSION_FACTORY
 from app.models import User
 
 
@@ -16,7 +18,8 @@ bearer_scheme = HTTPBearer()
 
 
 def get_db() -> Generator[Session, None, None]:
-    db = SessionLocal()
+    """Provide a database session and close it after the request."""
+    db = SESSION_FACTORY()
     try:
         yield db
     finally:
@@ -27,6 +30,7 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     db: Session = Depends(get_db),
 ) -> User:
+    """Validate the bearer token and load its user."""
     credentials_error = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -42,8 +46,8 @@ def get_current_user(
         username = payload.get("sub")
         if not username:
             raise credentials_error
-    except InvalidTokenError:
-        raise credentials_error
+    except InvalidTokenError as exc:
+        raise credentials_error from exc
 
     user = db.scalar(select(User).where(User.username == username))
     if user is None:
@@ -52,6 +56,7 @@ def get_current_user(
 
 
 def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    """Require the authenticated user to have the admin role."""
     if current_user.role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

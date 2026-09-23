@@ -14,6 +14,26 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
+## Static checks
+
+Run these commands from the `api` directory:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pylint app
+python -m bandit -r app
+```
+
+In CI, run the checks as separate steps or use `&&` between them so either
+failure fails the job. Do not pipe Pylint output into Bandit. Omit `-lll` to
+include low- and medium-severity findings as well as high-severity findings.
+Scan `app`, not the virtual environment.
+
+The `nosec B106` annotation on the login response only suppresses the false
+positive for the public `bearer` authorization scheme. Other Bandit checks
+remain enabled. SQLAlchemy data models locally exempt Pylint's minimum
+public-method count because their behavior comes from the ORM.
+
 ## Seed the database
 
 The seed command can safely be run more than once:

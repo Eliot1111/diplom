@@ -1,3 +1,5 @@
+"""HTTP endpoints for the security demonstration API."""
+
 from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -16,11 +18,13 @@ app = FastAPI(title="Security Demo API")
 
 @app.get("/health")
 def health() -> dict[str, str]:
+    """Return the service health status."""
     return {"status": "ok"}
 
 
 @app.post("/auth/login", response_model=Token)
 def login(credentials: LoginRequest, db: Session = Depends(get_db)) -> Token:
+    """Authenticate credentials and return an access token."""
     user = db.scalar(select(User).where(User.username == credentials.username))
     if user is None or not verify_password(
         credentials.password, user.hashed_password
@@ -31,7 +35,8 @@ def login(credentials: LoginRequest, db: Session = Depends(get_db)) -> Token:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    return Token(
+    # The bearer scheme is public protocol metadata, not a hardcoded password.
+    return Token(  # nosec B106
         access_token=create_access_token(user.username),
         token_type="bearer",
     )
@@ -41,6 +46,7 @@ def login(credentials: LoginRequest, db: Session = Depends(get_db)) -> Token:
 def read_current_user(
     current_user: User = Depends(get_current_user),
 ) -> User:
+    """Return the authenticated user."""
     return current_user
 
 
@@ -49,16 +55,19 @@ def read_users(
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> list[User]:
+    """List users for an administrator."""
     return list(db.scalars(select(User).order_by(User.id)).all())
 
 
 @app.get("/items", response_model=list[ItemResponse])
 def read_items(db: Session = Depends(get_db)) -> list[Item]:
+    """List all items in identifier order."""
     return list(db.scalars(select(Item).order_by(Item.id)).all())
 
 
 @app.get("/items/{item_id}", response_model=ItemResponse)
 def read_item(item_id: int, db: Session = Depends(get_db)) -> Item:
+    """Return an item or raise a not-found error."""
     item = db.get(Item, item_id)
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -71,6 +80,7 @@ def create_item(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> Item:
+    """Create an item owned by the authenticated user."""
     item = Item(**item_data.model_dump(), owner_id=current_user.id)
     db.add(item)
     db.commit()
