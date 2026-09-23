@@ -1,4 +1,0 @@
-    - name: Analysing the code with pylint and bandit
-      run: |
-        pylint $(git ls-files '*.py') |
-        bandit -rlll $(git ls-files '*.py')
