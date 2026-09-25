@@ -23,8 +23,10 @@ jobs:
         pylint $(git ls-files '*.py') |
         bandit -rlll $(git ls-files '*.py')
         
-    - name: Testing my own workflow
+    - name: Build and up application
       id: first_test
       uses: ./security_env_action
       with:
-        get-name: "Matthew Barkanov"
+        dockerfile-path: api/app/Dockerfile
+        name_for_image: appv1
+        port_forwarding: 8000:8000
