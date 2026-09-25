@@ -3,9 +3,9 @@
 DOCKERFILE="$1"
 NAME_FOR_IMAGE="$2"
 PORT_FORWARDING="$3"
+CONTEXT_DIR="$4"
 
 
-docker build -t "$NAME_FOR_IMAGE" "$DOCKERFILE"
+docker build -t "$NAME_FOR_IMAGE" -f "$DOCKERFILE" "$CONTEXT_DIR"
 
-docker run -d -p "$PORT_FORWARDING"
-
+docker run -d -p "$PORT_FORWARDING" "$NAME_FOR_IMAGE"

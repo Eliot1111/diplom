@@ -30,3 +30,4 @@ jobs:
         dockerfile-path: api/app/Dockerfile
         name_for_image: appv1
         port_forwarding: 8000:8000
+        context_dir: api

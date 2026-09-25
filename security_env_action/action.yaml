@@ -10,6 +10,10 @@ inputs:
     description: "Getting the final name of the image"
     required: true
 
+  context_dir:
+    description: "Dirrectory for docker's context"
+    required: true
+
   port_forwarding:
     description: "Getting ports for port forwarding (format: x:x)"
     required: true
@@ -25,6 +29,7 @@ runs:
         DOCKERFILE="${{ inputs.dockerfile-path }}" 
         NAME_FOR_IMAGE="${{ inputs.name_for_image }}"
         PORT_FORWARDING="${{ inputs.port_forwarding }}"
+        CONTEXT_DIR="${{ inputs.context_dir }}"
 
         echo "Using Dockerfile: $DOCKERFILE"
         bash "${{ github.action_path }}/scripts/building_and_running_container.sh" "$DOCKERFILE" "$NAME_FOR_IMAGE" "$PORT_FORWARDING" 
