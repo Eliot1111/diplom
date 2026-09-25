@@ -27,4 +27,4 @@ runs:
         PORT_FORWARDING="${{ inputs.port_forwarding }}"
 
         echo "Using Dockerfile: $DOCKERFILE"
-        bash scripts/building_and_running_container.sh "$DOCKERFILE" "$NAME_FOR_IMAGE" "$PORT_FORWARDING" 
+        bash security_env_action/scripts/building_and_running_container.sh "$DOCKERFILE" "$NAME_FOR_IMAGE" "$PORT_FORWARDING" 
