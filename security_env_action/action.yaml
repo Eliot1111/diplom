@@ -32,4 +32,4 @@ runs:
         CONTEXT_DIR="${{ inputs.context_dir }}"
 
         echo "Using Dockerfile: $DOCKERFILE"
-        bash "${{ github.action_path }}/scripts/building_and_running_container.sh" "$DOCKERFILE" "$NAME_FOR_IMAGE" "$PORT_FORWARDING" 
+        bash "${{ github.action_path }}/scripts/building_and_running_container.sh" "$DOCKERFILE" "$NAME_FOR_IMAGE" "$PORT_FORWARDING" "$CONTEXT_DIR"
