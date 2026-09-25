@@ -2,15 +2,29 @@ name: My first action
 description: "Just testing how it works"
 
 inputs:
-  get-name:
-    description: "To get the name of my user"
+  dockerfile-path:
+    description: "Getting Dockerfile to create an image and run the application"
     required: true
+
+  name_for_image:
+    description: "Getting the final name of the image"
+    required: true
+
+  port_forwarding:
+    description: "Getting ports for port forwarding (format: x:x)"
+    required: true
+  
 
 runs:
   using: "composite"
 
   steps:
-    - name: Print message to user
+    - name: Build and up app in Docker
       shell: bash
-      run:
-        echo "Hello from developer to ${{ inputs.get-name }}"
+      run: |
+        DOCKERFILE="${{ inputs.dockerfile-path }}" 
+        NAME_FOR_IMAGE="${{ inputs.name_for_image }}"
+        PORT_FORWARDING="${{ inputs.port_forwarding }}"
+
+        echo "Using Dockerfile: $DOCKERFILE"
+        bash scripts/building_and_running_container.sh "$DOCKERFILE" "$NAME_FOR_IMAGE" "$PORT_FORWARDING" 
