@@ -2,3 +2,6 @@
       run: |
         pylint $(git ls-files '*.py') |
         bandit -rlll $(git ls-files '*.py')
+
+
+Исправить git (удаленный репозиторий расходится с локальным)
